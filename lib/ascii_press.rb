@@ -3,6 +3,7 @@ require 'ascii_press/version'
 require 'rubypress'
 require 'asciidoctor'
 require 'logger'
+require 'stringio'
 
 require 'active_support/core_ext/enumerable'
 
@@ -49,7 +50,9 @@ module AsciiPress
     end
 
     def render(adoc_file_path)
-      doc = Asciidoctor.load_file(adoc_file_path, @options)
+      doc = nil
+      errors = capture_stderr { doc = Asciidoctor.load_file(adoc_file_path, @options) }
+      puts errors.split(/[\n\r]+/).reject {|line| line.match(/out of sequence/) }.join("\n")
 
       html = doc.convert
 
@@ -69,6 +72,14 @@ module AsciiPress
         end
       end
     end
+
+    def capture_stderr
+      real_stderr, $stderr = $stderr, StringIO.new
+      yield
+      $stderr.string
+    ensure
+      $stderr = real_stderr
+    end
   end
 
   class WordPressSyncer
@@ -80,6 +91,7 @@ module AsciiPress
       @renderer = renderer || Renderer.new
       @filter_proc = options[:filter_proc] || Proc.new { true }
       @delete_not_found = options[:delete_not_found]
+      @generate_tags = options[:generate_tags]
 
       all_pages = @wp_client.getPosts(filter: {post_type: @post_type, number: 1000})
       @all_pages_by_post_name = all_pages.index_by {|post| post['post_name'] }
@@ -129,11 +141,10 @@ module AsciiPress
                   post_title:    title,
                   post_name:     slug,
                   post_status:   'publish',
-                  custom_fields: custom_fields,
-                  terms_names: {
-                    post_tag: rendering.tags
-                  }
+                  custom_fields: custom_fields
                 }
+
+      content[:terms_names] = {post_tag: rendering.tags} if @generate_tags
 
       if page = @all_pages_by_post_name[slug]
         if page['custom_fields']
