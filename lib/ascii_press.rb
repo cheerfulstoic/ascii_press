@@ -86,7 +86,7 @@ module AsciiPress
     def initialize(blog_id, username, password, renderer, options = {})
       @blog_id = blog_id
       @wp_client = Rubypress::Client.new(host: @blog_id, username: username, password: password)
-      @post_type = options[:post_type] || 'developer'
+      @post_type = options[:post_type] || 'faq'
       @logger = options[:logger] || AsciiPress.logger
       @renderer = renderer || Renderer.new
       @filter_proc = options[:filter_proc] || Proc.new { true }
@@ -111,7 +111,9 @@ module AsciiPress
 
           log :info, "Deleting missing post_name: #{post_name_to_delete} (post ##{post_id})"
 
-          send_message(:deletePost, blog_id: @blog_id, post_id: post_id)
+          # send_message(:deletePost, blog_id: @blog_id, post_id: post_id)
+
+          log :info, 'Psych!'
         end
 
       end
@@ -140,7 +142,7 @@ module AsciiPress
                   post_content:  html,
                   post_title:    title,
                   post_name:     slug,
-                  post_status:   'publish',
+                  post_status:   'draft',
                   custom_fields: custom_fields
                 }
 
