@@ -136,6 +136,7 @@ module AsciiPress
 
       # log :info, "data: #{rendering.data.inspect}"
 
+      custom_fields_array = custom_fields.merge('adoc_attributes' => rendering.doc.attributes.to_json).map {|k, v| {key: k, value: v} }
       content = {
                   post_type:     @post_type,
                   post_date:     Time.now - 60*60*24*30,
@@ -143,7 +144,7 @@ module AsciiPress
                   post_title:    title,
                   post_name:     slug,
                   post_status:   'draft',
-                  custom_fields: custom_fields
+                  custom_fields: custom_fields_array
                 }
 
       content[:terms_names] = {post_tag: rendering.tags} if @generate_tags
