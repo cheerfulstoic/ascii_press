@@ -51,7 +51,13 @@ module AsciiPress
 
     def render(adoc_file_path)
       doc = nil
-      errors = capture_stderr { doc = Asciidoctor.load_file(adoc_file_path, @options) }
+      errors = capture_stderr do
+        document_text = File.read(adoc_file_path)
+        if before_convertion = @options[:before_convertion]
+          document_text = before_convertion.call(document_text)
+        end
+        doc = Asciidoctor.load(document_text, @options)
+      end
       puts errors.split(/[\n\r]+/).reject {|line| line.match(/out of sequence/) }.join("\n")
 
       html = doc.convert
