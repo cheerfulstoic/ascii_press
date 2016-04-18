@@ -117,9 +117,7 @@ module AsciiPress
 
           log :info, "Deleting missing post_name: #{post_name_to_delete} (post ##{post_id})"
 
-          # send_message(:deletePost, blog_id: @blog_id, post_id: post_id)
-
-          log :info, 'Psych!'
+          send_message(:deletePost, blog_id: @blog_id, post_id: post_id)
         end
 
       end
