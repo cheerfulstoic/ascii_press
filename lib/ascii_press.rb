@@ -62,6 +62,10 @@ module AsciiPress
 
       html = doc.convert
 
+      if after_conversion = @options[:after_conversion]
+        html = after_conversion.call(html)
+      end
+
       data = doc.attributes.each_with_object({}) do |(key, value), result|
         result[key.to_sym] = value.to_s
       end
