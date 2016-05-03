@@ -4,6 +4,7 @@ require 'rubypress'
 require 'asciidoctor'
 require 'logger'
 require 'stringio'
+require 'json'
 
 require 'active_support/core_ext/enumerable'
 
