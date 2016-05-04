@@ -103,6 +103,7 @@ module AsciiPress
       @filter_proc = options[:filter_proc] || Proc.new { true }
       @delete_not_found = options[:delete_not_found]
       @generate_tags = options[:generate_tags]
+      @options = options
 
       all_pages = @wp_client.getPosts(filter: {post_type: @post_type, number: 1000})
       @all_pages_by_post_name = all_pages.index_by {|post| post['post_name'] }
@@ -152,7 +153,7 @@ module AsciiPress
                   post_content:  html,
                   post_title:    title,
                   post_name:     slug,
-                  post_status:   'draft',
+                  post_status:   @options[:post_status] || 'draft',
                   custom_fields: custom_fields_array
                 }
 
