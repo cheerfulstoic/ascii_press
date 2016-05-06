@@ -54,10 +54,11 @@ module AsciiPress
       doc = nil
       errors = capture_stderr do
         document_text = File.read(adoc_file_path)
+        base_dir = ::File.expand_path(File.dirname(adoc_file_path))
         if before_convertion = @options[:before_convertion]
           document_text = before_convertion.call(document_text)
         end
-        doc = Asciidoctor.load(document_text, @options)
+        doc = Asciidoctor.load(document_text, @options.merge(base_dir: base_dir))
       end
       puts errors.split(/[\n\r]+/).reject {|line| line.match(/out of sequence/) }.join("\n")
 
@@ -180,6 +181,7 @@ module AsciiPress
 
       slug
     end
+
 
     private
 
