@@ -185,6 +185,17 @@ module AsciiPress
 
     private
 
+    def new_content_same_as_page?(content, page)
+      main_keys_different = %i(post_content post_title post_name post_status).any? do |key|
+        content[key] != page[key.to_s]
+      end
+
+      page_fields = page['custom_fields'].each_with_object({}) {|field, h| h[field['key']] = field['value'] }
+      content_fields = content[:custom_fields].each_with_object({}) {|field, h| h[field[:key].to_s] = field[:value] }
+
+      !main_keys_different && oyyyy
+    end
+
     def log(level, message)
       @logger.send(level, "WORDPRESS: #{message}")
     end
@@ -193,6 +204,47 @@ module AsciiPress
       @wp_client.send(message, *args).tap do |result|
         raise "WordPress #{message} failed!" if !result
       end
+    end
+  end
+
+  DEFAULT_SLUG_RULES = {
+    'Cannot start with `-` or `_`' => -> (slug) { !%w(- _).include?(slug[0]) },
+    'Cannot end with `-` or `_`' => -> (slug) { !%w(- _).include?(slug[-1]) },
+    'Cannot have multiple `-` in a row' => -> (slug) { !slug.match(/--/) },
+    'Must only contain letters, numbers, hyphens, and underscores' => -> (slug) { !!slug.match(/^[a-z0-9\-\_]+$/) },
+  }
+
+  def self.slug_valid?(slug, rules = DEFAULT_SLUG_RULES)
+    rules.values.all? {|rule| rule.call(slug) }
+  end
+
+  def self.violated_slug_rules(slug, rules = DEFAULT_SLUG_RULES)
+    rules.reject do |desc, rule|
+      rule.call(slug)
+    end.map(&:first)
+  end
+
+  def self.verify_adoc_slugs!(adoc_paths, rules = DEFAULT_SLUG_RULES)
+    data = adoc_paths.map do |path|
+      doc = Asciidoctor.load(File.read(path))
+
+      slug = doc.attributes['slug']
+      if !slug_valid?(slug, rules)
+        violations = violated_slug_rules(slug, rules)
+        [path, slug, violations]
+      end
+    end.compact
+
+    if data.size > 0
+      require 'colorize'
+      data.each do |path, slug, violations|
+        puts 'WARNING!!'.red
+        puts "The document #{path.blue} has the #{slug.blue} which in invalid because:"
+        violations.each do |violation|
+          puts "  - #{violation.yellow}"
+        end
+      end
+      raise 'Invalid slugs.  Cannot continue'
     end
   end
 end
