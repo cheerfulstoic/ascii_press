@@ -215,10 +215,12 @@ module AsciiPress
   }
 
   def self.slug_valid?(slug, rules = DEFAULT_SLUG_RULES)
-    rules.values.all? {|rule| rule.call(slug) }
+    slug && rules.values.all? {|rule| rule.call(slug) }
   end
 
   def self.violated_slug_rules(slug, rules = DEFAULT_SLUG_RULES)
+    return ['No slug'] if slug.nil?
+
     rules.reject do |desc, rule|
       rule.call(slug)
     end.map(&:first)
@@ -239,7 +241,7 @@ module AsciiPress
       require 'colorize'
       data.each do |path, slug, violations|
         puts 'WARNING!!'.red
-        puts "The document #{path.blue} has the #{slug.blue} which in invalid because:"
+        puts "The document #{path.light_blue} has the slug #{slug.inspect.light_blue} which in invalid because:"
         violations.each do |violation|
           puts "  - #{violation.yellow}"
         end
