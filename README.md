@@ -42,7 +42,7 @@ adoc_file_paths = `find . -name "*.adoc"`.split(/[\n\r]+/)
 syncer.sync(adoc_file_paths)
 ```
 
-See the [API documentation](http://www.rubydoc.info/github/cheerfulstoic/ascii_press/master) for moder details on arguments and options
+See the [API documentation](http://www.rubydoc.info/github/cheerfulstoic/ascii_press/master) for more details on arguments and options
 
 ## Contributing
 
