@@ -28,7 +28,7 @@ WP_USERNAME = 'fake'
 WP_PASSWORD = 'pass'
 WP_POST_TYPE = 'faq'
 
-renderer = AsciiPress::Renderer.new(extra_tags_proc: -> (rendering) { ['tag-for-all'] },
+renderer = AsciiPress::Renderer.new(tags_proc: -> (rendering) { rendering.tags + ['tag-for-all'] },
                                     asciidoc_options: {attributes: 'allow-uri-read'})
 
 syncer = AsciiPress::WordPressSyncer.new(WP_HOSTNAME, WP_USERNAME, WP_PASSWORD, renderer, WP_POST_TYPE

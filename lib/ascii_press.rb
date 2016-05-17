@@ -65,7 +65,7 @@ module AsciiPress
     # @option options [Hash] :asciidoc_options Passed directly to the +Asciidoctor.load+ method.  See the {http://asciidoctor.org/rdoc/Asciidoctor.html AsciiDoctor documentation}
     # @option options [Proc] :before_convertion Proc which is given the asciidoctor text.  Whatever is returned is passed to +Asciidoctor.load+.  See the {http://asciidoctor.org/rdoc/Asciidoctor.html AsciiDoctor documentation}
     # @option options [Proc] :after_conversion Proc which is given the html text after the Asciidoctor conversion.  Whatever is returned will be uploaded to WordPress
-    # @option options [Proc] :extra_tags_proc Proc which is given the {Rendering} object (see below).  Whatever is returned will be used as the WordPress Post's tags
+    # @option options [Proc] :tags_proc Proc which is given the {Rendering} object (see below).  Whatever is returned will be used as the WordPress Post's tags
     #
     def initialize(options = {})
       @options = options
@@ -101,8 +101,8 @@ module AsciiPress
         rendering.tags << 'public' if rendering.attribute_exists?(:public)
         rendering.tags << 'private' if rendering.attribute_exists?(:private)
 
-        if @options[:extra_tags_proc]
-          rendering.tags.concat @options[:extra_tags_proc].call(rendering)
+        if @options[:tags_proc]
+          rendering.tags = @options[:tags_proc].call(rendering)
         end
       end
     end
