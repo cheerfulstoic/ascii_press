@@ -58,7 +58,7 @@ module AsciiPress
         if before_convertion = @options[:before_convertion]
           document_text = before_convertion.call(document_text)
         end
-        doc = Asciidoctor.load(document_text, @options.merge(base_dir: base_dir))
+        doc = Asciidoctor.load(document_text, @options[:asciidoc_options].merge(base_dir: base_dir))
       end
       puts errors.split(/[\n\r]+/).reject {|line| line.match(/out of sequence/) }.join("\n")
 
