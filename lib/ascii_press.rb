@@ -95,10 +95,10 @@ module AsciiPress
   end
 
   class WordPressSyncer
-    def initialize(blog_id, username, password, renderer, options = {})
+    def initialize(blog_id, username, password, post_type, renderer, options = {})
       @blog_id = blog_id
       @wp_client = Rubypress::Client.new(host: @blog_id, username: username, password: password)
-      @post_type = options[:post_type] || 'faq'
+      @post_type = post_type
       @logger = options[:logger] || AsciiPress.logger
       @renderer = renderer || Renderer.new
       @filter_proc = options[:filter_proc] || Proc.new { true }
