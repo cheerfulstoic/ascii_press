@@ -21,9 +21,6 @@ module AsciiPress
 
   class Renderer
     class Rendering
-      attr_reader :html, :doc, :data
-      attr_accessor :tags
-
       # @method html
       # @return [String] The HTML resulting from the asciidoc
 
@@ -35,6 +32,9 @@ module AsciiPress
 
       # @method tags
       # @return [Array <String>] The tags which will be set in +WordPress+
+
+      attr_reader :html, :doc, :data
+      attr_accessor :tags
 
       # Create a new {Rendering} object (intended to be used by Syncers like {WordPressSyncer})
       def initialize(html, doc, data)
