@@ -21,19 +21,16 @@ module AsciiPress
 
   class Renderer
     class Rendering
-      # @method html
       # @return [String] The HTML resulting from the asciidoc
+      attr_reader :html
 
-      # @method doc
       # @return [Asciidoctor::Document] The document from the +asciidoctor+ gem
+      attr_reader :doc
 
-      # @method data
       # @return [Hash] The adoc file's attributes standardized with symbol keys and string values
+      attr_reader :data
 
-      # @method tags
       # @return [Array <String>] The tags which will be set in +WordPress+
-
-      attr_reader :html, :doc, :data
       attr_accessor :tags
 
       # Create a new {Rendering} object (intended to be used by Syncers like {WordPressSyncer})
