@@ -189,7 +189,7 @@ module AsciiPress
       custom_fields_array = custom_fields.merge('adoc_attributes' => rendering.doc.attributes.to_json).map {|k, v| {key: k, value: v} }
       content = {
                   post_type:     @post_type,
-                  post_date:     Time.now,
+                  post_date:     Time.now - 60*60*24,
                   post_content:  html,
                   post_title:    title,
                   post_name:     slug,
