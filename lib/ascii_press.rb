@@ -33,6 +33,9 @@ module AsciiPress
       # @return [Array <String>] The tags which will be set in +WordPress+
       attr_accessor :tags
 
+      # @return [String] The title that will be used
+      attr_accessor :title
+
       # Create a new {Rendering} object (intended to be used by Syncers like {WordPressSyncer})
       def initialize(html, doc, data)
         @html = html
@@ -65,7 +68,7 @@ module AsciiPress
     # @option options [Hash] :asciidoc_options Passed directly to the +Asciidoctor.load+ method.  See the {http://asciidoctor.org/rdoc/Asciidoctor.html AsciiDoctor documentation}
     # @option options [Proc] :before_convertion Proc which is given the asciidoctor text.  Whatever is returned is passed to +Asciidoctor.load+.  See the {http://asciidoctor.org/rdoc/Asciidoctor.html AsciiDoctor documentation}
     # @option options [Proc] :after_conversion Proc which is given the html text after the Asciidoctor conversion.  Whatever is returned will be uploaded to WordPress
-    # @option options [Proc] :tags_proc Proc which is given the {Rendering} object (see below).  Whatever is returned will be used as the WordPress Post's tags
+    # @option options [Proc] :rendering_proc Proc which is given the {Rendering} object (see below).  Changes made be made to the rendering in-place
     #
     def initialize(options = {})
       @options = options
@@ -101,8 +104,8 @@ module AsciiPress
         rendering.tags << 'public' if rendering.attribute_exists?(:public)
         rendering.tags << 'private' if rendering.attribute_exists?(:private)
 
-        if @options[:tags_proc]
-          rendering.tags = @options[:tags_proc].call(rendering)
+        if @options[:rendering_proc]
+          rendering.tags = @options[:rendering_proc].call(rendering)
         end
       end
     end
