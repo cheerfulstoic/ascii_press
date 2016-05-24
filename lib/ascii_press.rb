@@ -41,6 +41,7 @@ module AsciiPress
         @html = html
         @doc = doc
         @data = data
+        @title = doc.doctitle
       end
 
       # @!visibility private
@@ -182,7 +183,7 @@ module AsciiPress
         return
       end
 
-      title = rendering.doc.doctitle
+      title = rendering.title
       html = rendering.html
 
       log :info, "Syncing to WordPress: #{title} (slug: #{slug})"
