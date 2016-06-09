@@ -71,7 +71,7 @@ module AsciiPress
     # @option options [Proc] :after_conversion Proc which is given the html text after the Asciidoctor conversion.  Whatever is returned will be uploaded to WordPress
     # @option options [Proc] :rendering_proc Proc which is given the {Rendering} object (see below).  Changes made be made to the rendering in-place
     #
-    def initialize(options = {})
+    def initialize(options = {asciidoc_options: {}})
       @options = options
     end
 
